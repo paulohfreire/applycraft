@@ -2,7 +2,7 @@
 
 [English version](README.en.md)
 
-O ApplyCraft é um sistema local-first de skills para organizar a avaliação de vagas, a adaptação de currículos e cartas de apresentação, a preparação para entrevistas e o acompanhamento de processos seletivos com o Codex.
+O ApplyCraft é um sistema local-first de skills para organizar a avaliação de vagas, a adaptação de currículos e cartas de apresentação, a preparação para entrevistas e o acompanhamento de processos seletivos com agentes de IA compatíveis.
 
 O repositório separa responsabilidades para reduzir a perda de contexto e evitar que uma etapa altere indevidamente o trabalho de outra. Os dados profissionais e os materiais das candidaturas permanecem apenas no ambiente local; o Git versiona somente a estrutura, as regras e os fluxos reutilizáveis.
 
@@ -42,12 +42,16 @@ A análise de compatibilidade deve sempre ocorrer antes da adaptação dos docum
 |       |-- atualizar-status-vaga/
 |       |-- comandos/
 |       `-- preparar-etapa/
+|-- .claude/                    # adaptadores gerados para o Claude Code
 |-- candidaturas/               # conteúdo e painéis locais, ignorados pelo Git
 |-- dashboard/                  # front local do acompanhamento visual
+|-- scripts/agents/             # sincronização entre agentes
 |-- scripts/dashboard/          # geração e validação dos dados do front
 |-- tests/                       # testes do dashboard e das skills
 |-- website/                     # landing page Angular do ApplyCraft
 |-- perfil/                      # dados profissionais locais, ignorados pelo Git
+|-- AGENTS.md                    # instruções compartilhadas entre agentes
+|-- CLAUDE.md                    # entrada específica do Claude Code
 |-- CONTEXT.md                   # vocabulário e limites do domínio
 |-- .gitignore
 |-- README.en.md
@@ -98,15 +102,36 @@ candidaturas/<empresa>-<cargo>/
     `-- carta.md
 ```
 
-## Skills e comandos disponíveis
+## Compatibilidade com agentes
 
-Digite `$comandos` no chat para consultar os recursos disponíveis neste workspace:
+`.agents/skills/` é a fonte canônica das skills. O Cursor reconhece esse diretório diretamente; o Codex usa as mesmas skills com a sintaxe `$nome-da-skill`. Para o Claude Code, adaptadores leves em `.claude/skills/` expõem cada recurso como `/nome-da-skill` e encaminham o agente para as instruções canônicas.
 
-```text
-$comandos
+Depois de adicionar, renomear ou alterar os metadados de uma skill, sincronize e valide os adaptadores:
+
+```powershell
+npm run agents:setup
+npm run agents:check
 ```
 
-A resposta separa as skills, invocadas com `$`, dos comandos executados no terminal. Cada skill apresenta uma descrição curta e, quando disponível, um exemplo de solicitação. O catálogo é gerado dinamicamente a partir dos arquivos `SKILL.md`, dos metadados em `agents/openai.yaml` e dos scripts declarados no `package.json`; por isso, novas skills e novos comandos passam a aparecer sem a manutenção de uma segunda lista.
+Os arquivos `agents/openai.yaml` fornecem somente metadados de interface ao Codex. O comportamento compartilhado permanece definido em `SKILL.md`.
+
+| Agente | Descoberta | Invocação explícita |
+|---|---|---|
+| Codex | `.agents/skills/` | `$comandos` |
+| Cursor | `.agents/skills/` | `/comandos` |
+| Claude Code | `.claude/skills/` gerado a partir de `.agents/skills/` | `/comandos` |
+
+## Skills e comandos disponíveis
+
+Invoque `comandos` no chat para consultar os recursos disponíveis neste workspace:
+
+```text
+Codex:       $comandos
+Claude:      /comandos
+Cursor:      /comandos
+```
+
+A resposta separa as skills dos comandos executados no terminal e usa a sintaxe do agente atual. Cada skill apresenta uma descrição curta e, quando disponível, um exemplo de solicitação. O catálogo é gerado dinamicamente a partir dos arquivos `SKILL.md`, dos metadados em `agents/openai.yaml` e dos scripts declarados no `package.json`; por isso, novas skills e novos comandos passam a aparecer sem a manutenção de uma segunda lista.
 
 Somente as skills pertencentes a este repositório são exibidas. Skills pessoais, globais ou fornecidas por plugins não fazem parte do catálogo do projeto.
 
@@ -117,9 +142,9 @@ Depois de clonar o repositório:
 1. Crie `perfil/curriculo-base.md` com experiências, competências, formação e resultados comprovados.
 2. Opcionalmente, salve uma versão de referência do currículo como `perfil/curriculo-referencia.pdf`.
 3. Quando necessário, mantenha informações complementares em `perfil/inventario-de-experiencias.md` e preferências em `perfil/preferencias-de-vagas.md`.
-4. Abra o repositório no Codex e solicite a análise de uma vaga ou a preparação para uma entrevista.
+4. Abra a raiz do repositório no Codex, Cursor ou Claude Code e solicite a análise de uma vaga ou a preparação para uma entrevista.
 
-As skills locais em `.agents/skills/` são descobertas pelo Codex de acordo com a solicitação correspondente. A invocação explícita usa o formato `$nome-da-skill`.
+As skills locais em `.agents/skills/` são descobertas diretamente pelo Codex e pelo Cursor. Os adaptadores do Claude Code já acompanham o repositório e podem ser atualizados com `npm run agents:setup`.
 
 ## Validação local
 
@@ -150,22 +175,22 @@ As skills seguem estas regras:
 
 ## Skills
 
-### `$comandos`
+### `comandos`
 
 Lista automaticamente as skills locais com uma descrição curta e um exemplo de uso, além dos comandos `npm` do projeto. O catálogo é gerado a partir dos arquivos do próprio workspace e não inclui skills pessoais, globais ou fornecidas por plugins.
 
-### `$analisar-match-vaga`
+### `analisar-match-vaga`
 
 Classifica os requisitos da vaga, associa evidências do perfil, estima a compatibilidade e registra riscos, lacunas e uma recomendação fundamentada. Não edita currículos nem cartas de apresentação.
 
-### `$adaptar-candidatura`
+### `adaptar-candidatura`
 
 Produz um currículo e uma carta de apresentação direcionados depois que a compatibilidade é analisada. Pode reorganizar e aprimorar a redação das evidências, mas não ampliar o que realmente aconteceu.
 
-### `$atualizar-status-vaga`
+### `atualizar-status-vaga`
 
 Registra etapas agendadas e concluídas, feedbacks, próximas ações e mudanças no processo seletivo. Mantém o histórico detalhado da candidatura e os painéis Markdown/JSON, propõe uma avaliação de 1 a 5 para etapas avaliativas e solicita confirmação antes de registrá-la. Não altera `vaga.md`, não realiza a análise inicial de compatibilidade e não cria lembretes sem autorização explícita.
 
-### `$preparar-etapa`
+### `preparar-etapa`
 
 Cria uma preparação persistente e específica para uma etapa, relacionando requisitos da vaga a evidências reais do perfil. Oferece modos rápido, padrão e aprofundado, pode conduzir entrevistas simuladas e registra avaliações por dimensão. Lê o histórico do processo, mas deixa qualquer alteração de status para `atualizar-status-vaga`.

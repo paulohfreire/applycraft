@@ -55,6 +55,22 @@ test('formata invocações com $ e mantém comandos em seção separada', async 
   assert.match(output, /# Comandos do projeto[\s\S]*`npm run verificar`/);
 });
 
+test('formata invocações portáveis para Claude e Cursor', async () => {
+  const catalog = await buildCommandCatalog({ root: await createFixture() });
+
+  for (const agent of ['claude', 'cursor']) {
+    const output = formatCommandCatalog(catalog, { agent });
+    assert.match(output, /`\/alfa` — Primeira frase\./);
+    assert.match(output, /Exemplo: Use \/zeta para testar\./);
+  }
+});
+
+test('rejeita um agente desconhecido', async () => {
+  const catalog = await buildCommandCatalog({ root: await createFixture() });
+
+  assert.throws(() => formatCommandCatalog(catalog, { agent: 'desconhecido' }), /Agente inválido/);
+});
+
 test('rejeita skill sem metadados obrigatórios', async () => {
   const root = await createFixture();
   await mkdir(join(root, '.agents', 'skills', 'invalida'), { recursive: true });

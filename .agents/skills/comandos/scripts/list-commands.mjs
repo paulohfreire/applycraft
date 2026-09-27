@@ -95,12 +95,25 @@ export async function buildCommandCatalog({ root = defaultRoot } = {}) {
   return { skills, commands };
 }
 
-export function formatCommandCatalog({ skills, commands }) {
+const invocationPrefixes = {
+  codex: '$',
+  claude: '/',
+  cursor: '/',
+};
+
+function formatExample(example, prefix) {
+  return example?.replace(/\$([a-z0-9-]+)/g, (_, name) => `${prefix}${name}`) || null;
+}
+
+export function formatCommandCatalog({ skills, commands }, { agent = 'codex' } = {}) {
+  const prefix = invocationPrefixes[agent];
+  if (!prefix) throw new Error(`Agente inválido: ${agent}. Use codex, claude ou cursor.`);
   const lines = ['# Skills disponíveis neste workspace', ''];
 
   for (const skill of skills) {
-    lines.push(`- \`$${skill.name}\` — ${skill.description}`);
-    if (skill.example) lines.push(`  Exemplo: ${skill.example}`);
+    lines.push(`- \`${prefix}${skill.name}\` — ${skill.description}`);
+    const example = formatExample(skill.example, prefix);
+    if (example) lines.push(`  Exemplo: ${example}`);
   }
 
   lines.push('', '# Comandos do projeto', '');
@@ -116,7 +129,9 @@ export function formatCommandCatalog({ skills, commands }) {
 async function main() {
   const rootArgument = process.argv.indexOf('--root');
   const root = rootArgument >= 0 ? resolve(process.argv[rootArgument + 1]) : defaultRoot;
-  process.stdout.write(formatCommandCatalog(await buildCommandCatalog({ root })));
+  const agentArgument = process.argv.indexOf('--agent');
+  const agent = agentArgument >= 0 ? process.argv[agentArgument + 1] : 'codex';
+  process.stdout.write(formatCommandCatalog(await buildCommandCatalog({ root }), { agent }));
 }
 
 const isMain = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
