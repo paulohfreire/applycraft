@@ -11,8 +11,8 @@
           [attr.aria-pressed]="activeIndex() === index"
           (click)="selectStep(index)"
         >
-          <span>{{ step.number }}</span
-          >{{ step.label }}
+          <span class="step-number">{{ step.number }}</span>
+          <span class="step-label">{{ step.label }}</span>
         </button>
       }
     </div>

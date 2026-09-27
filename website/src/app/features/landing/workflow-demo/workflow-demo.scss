@@ -2,6 +2,13 @@
   display: block;
 }
 .demo-shell {
+  // The terminal stays dark in both page themes.
+  --text-strong: #f2f0eb;
+  --text-muted: #b5b1aa;
+  --text-faint: #a09b94;
+  --line: #38363a;
+  --line-strong: #666168;
+  color-scheme: dark;
   overflow: hidden;
   border: 1px solid var(--line-strong);
   border-radius: calc(var(--radius) + 0.2rem);
@@ -26,6 +33,8 @@
   background: var(--accent);
 }
 .demo-chrome p {
+  min-width: 0;
+  overflow-wrap: anywhere;
   margin: 0 0 0 auto;
   color: var(--text-faint);
   font-family: var(--font-mono);
@@ -33,7 +42,7 @@
 }
 .demo-layout {
   display: grid;
-  grid-template-columns: 13rem 1fr;
+  grid-template-columns: 13rem minmax(0, 1fr);
   min-height: 37rem;
 }
 .step-list {
@@ -54,7 +63,7 @@
   font-weight: 670;
   text-align: left;
 }
-.step-list button span {
+.step-list .step-number {
   color: var(--text-faint);
   font-family: var(--font-mono);
   font-size: 0.67rem;
@@ -63,10 +72,15 @@
   background: var(--accent-soft);
   color: var(--text-strong);
 }
-.step-list button[aria-pressed='true'] span {
+.step-list .step-label {
+  line-height: 1.4;
+  white-space: nowrap;
+}
+.step-list button[aria-pressed='true'] .step-number {
   color: var(--accent);
 }
 .step-content {
+  min-width: 0;
   position: relative;
   padding: clamp(1.5rem, 5vw, 4.5rem);
 }
@@ -83,7 +97,7 @@
 h3 {
   position: relative;
   z-index: 1;
-  max-width: 15ch;
+  max-width: min(15ch, calc(100% - 4rem));
   margin: 0 0 1rem;
   color: var(--text-strong);
   font-size: clamp(1.8rem, 4vw, 3.2rem);
@@ -129,7 +143,7 @@ h3 {
 }
 .result-grid {
   display: grid;
-  grid-template-columns: 1.25fr 0.75fr;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
   gap: 1rem;
   margin-top: 1rem;
 }
@@ -139,15 +153,31 @@ h3 {
   }
   .step-list {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(max-content, 1fr));
     overflow-x: auto;
+    padding: 0.65rem;
     border-right: 0;
     border-bottom: 1px solid var(--line);
   }
   .step-list button {
-    min-width: 6.5rem;
+    min-width: 0;
     flex-direction: column;
     align-items: flex-start;
+    justify-content: flex-start;
+    gap: 0.5rem;
+    padding: 0.75rem 0.35rem;
+  }
+  .step-list .step-label {
+    font-size: 0.72rem;
+  }
+  .step-content__number {
+    position: static;
+    display: block;
+    margin-bottom: 1.25rem;
+    line-height: 1;
+  }
+  h3 {
+    max-width: 15ch;
   }
   .result-grid {
     grid-template-columns: 1fr;
