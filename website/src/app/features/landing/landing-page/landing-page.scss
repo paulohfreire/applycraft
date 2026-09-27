@@ -28,7 +28,7 @@
   align-items: center;
   gap: 0.65rem;
   margin: 0 0 1.5rem;
-  color: var(--accent);
+  color: var(--accent-text);
   font-family: var(--font-mono);
   font-size: 0.7rem;
   font-weight: 700;
@@ -105,7 +105,7 @@
 }
 .hero__copy h1 em {
   display: block;
-  color: var(--accent);
+  color: var(--accent-text);
   font-style: normal;
 }
 .hero__description {
@@ -169,7 +169,7 @@
   line-height: 1.6;
 }
 .hero__note span {
-  color: var(--accent);
+  color: var(--accent-text);
 }
 .hero__mark {
   position: relative;
@@ -250,7 +250,7 @@
   border: 1px solid var(--line);
   border-radius: 0.25rem;
   background: var(--terminal);
-  color: var(--text-muted);
+  color: #b5b1aa;
   font-family: var(--font-mono);
   font-size: 0.68rem;
   transform: rotate(2deg);
@@ -315,7 +315,7 @@
   border-right: 0;
 }
 .system-grid article > span {
-  color: var(--accent);
+  color: var(--accent-text);
   font-family: var(--font-mono);
   font-size: 0.72rem;
 }
