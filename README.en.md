@@ -2,7 +2,7 @@
 
 [Versão em português brasileiro](README.md)
 
-ApplyCraft is a local-first skills system for organizing job opportunity assessments, tailored résumés and cover letters, interview preparation, and hiring-process tracking with Codex.
+ApplyCraft is a local-first skills system for organizing job opportunity assessments, tailored résumés and cover letters, interview preparation, and hiring-process tracking with compatible AI agents.
 
 The repository separates responsibilities to reduce context loss and prevent one stage from improperly changing another stage's work. Professional data and application materials remain in the local environment; Git tracks only the structure, rules, and reusable workflows.
 
@@ -42,12 +42,16 @@ The compatibility assessment must always take place before the documents are tai
 |       |-- atualizar-status-vaga/
 |       |-- comandos/
 |       `-- preparar-etapa/
+|-- .claude/                    # generated Claude Code adapters
 |-- candidaturas/               # local content and dashboards, ignored by Git
 |-- dashboard/                  # local visual tracking front end
+|-- scripts/agents/             # cross-agent synchronization
 |-- scripts/dashboard/          # front-end data generation and validation
 |-- tests/                       # dashboard and skill tests
 |-- website/                     # ApplyCraft Angular landing page
 |-- perfil/                      # local professional data, ignored by Git
+|-- AGENTS.md                    # shared agent instructions
+|-- CLAUDE.md                    # Claude Code entry point
 |-- CONTEXT.md                   # domain vocabulary and boundaries
 |-- .gitignore
 |-- README.en.md
@@ -98,15 +102,36 @@ candidaturas/<company>-<role>/
     `-- carta.md
 ```
 
-## Available skills and commands
+## Agent compatibility
 
-Type `$comandos` in chat to see the resources available in this workspace:
+`.agents/skills/` is the canonical source for every skill. Cursor recognizes this directory directly, while Codex uses the same skills with the `$skill-name` syntax. For Claude Code, lightweight adapters under `.claude/skills/` expose each resource as `/skill-name` and direct the agent to the canonical instructions.
 
-```text
-$comandos
+After adding, renaming, or changing a skill's metadata, synchronize and validate the adapters:
+
+```powershell
+npm run agents:setup
+npm run agents:check
 ```
 
-The response separates skills, invoked with `$`, from commands executed in the terminal. Each skill includes a short description and, when available, an example request. The catalog is generated dynamically from `SKILL.md` files, metadata under `agents/openai.yaml`, and scripts declared in `package.json`, so newly added skills and commands appear without maintaining a second list.
+Files under `agents/openai.yaml` only provide Codex interface metadata. Shared behavior remains defined in `SKILL.md`.
+
+| Agent | Discovery | Explicit invocation |
+|---|---|---|
+| Codex | `.agents/skills/` | `$comandos` |
+| Cursor | `.agents/skills/` | `/comandos` |
+| Claude Code | `.claude/skills/`, generated from `.agents/skills/` | `/comandos` |
+
+## Available skills and commands
+
+Invoke `comandos` in chat to see the resources available in this workspace:
+
+```text
+Codex:       $comandos
+Claude:      /comandos
+Cursor:      /comandos
+```
+
+The response separates skills from commands executed in the terminal and uses the current agent's syntax. Each skill includes a short description and, when available, an example request. The catalog is generated dynamically from `SKILL.md` files, metadata under `agents/openai.yaml`, and scripts declared in `package.json`, so newly added skills and commands appear without maintaining a second list.
 
 Only skills that belong to this repository are displayed. Personal, global, and plugin-provided skills are outside the project catalog.
 
@@ -117,9 +142,9 @@ After cloning the repository:
 1. Create `perfil/curriculo-base.md` with verified experience, skills, education, and results.
 2. Optionally, save a reference version of the résumé as `perfil/curriculo-referencia.pdf`.
 3. When needed, keep supporting information in `perfil/inventario-de-experiencias.md` and job preferences in `perfil/preferencias-de-vagas.md`.
-4. Open the repository in Codex and request a job assessment or interview preparation.
+4. Open the repository root in Codex, Cursor, or Claude Code and request a job assessment or interview preparation.
 
-Codex discovers the local skills under `.agents/skills/` when a request matches their purpose. Explicit invocation uses the `$skill-name` format.
+Codex and Cursor discover the local skills under `.agents/skills/` directly. Claude Code adapters are included in the repository and can be refreshed with `npm run agents:setup`.
 
 ## Local validation
 
@@ -150,22 +175,22 @@ The skills follow these rules:
 
 ## Skills
 
-### `$comandos`
+### `comandos`
 
 Automatically lists local skills with a short description and usage example, followed by the project's `npm` commands. The catalog is generated from workspace files and excludes personal, global, and plugin-provided skills.
 
-### `$analisar-match-vaga`
+### `analisar-match-vaga`
 
 Classifies job requirements, maps them to evidence from the professional profile, estimates compatibility, and records risks, gaps, and a supported recommendation. It does not edit résumés or cover letters.
 
-### `$adaptar-candidatura`
+### `adaptar-candidatura`
 
 Produces a tailored résumé and cover letter after compatibility has been assessed. It may reorganize and improve the wording of the evidence, but it must not exaggerate what actually happened.
 
-### `$atualizar-status-vaga`
+### `atualizar-status-vaga`
 
 Records scheduled and completed stages, feedback, next actions, and selection-process status changes. It maintains the application's detailed history and Markdown/JSON dashboards, proposes a 1-to-5 assessment for evaluative stages, and requests confirmation before recording it. It does not modify `vaga.md`, perform the initial compatibility assessment, or create reminders without explicit authorization.
 
-### `$preparar-etapa`
+### `preparar-etapa`
 
 Creates persistent, stage-specific preparation by mapping job requirements to verified evidence from the professional profile. It offers quick, standard, and in-depth modes, can run mock interviews, and records assessments by dimension. It reads the process history but leaves status changes to `atualizar-status-vaga`.

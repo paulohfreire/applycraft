@@ -1,14 +1,14 @@
 ---
 name: comandos
-description: Lista as skills locais e os comandos npm disponíveis no workspace, com descrições curtas e exemplos de uso. Use quando o usuário invocar $comandos.
+description: Lista as skills locais e os comandos npm disponíveis no workspace, com descrições curtas e exemplos de uso. Use quando o usuário pedir o catálogo de recursos deste projeto.
 ---
 
 # Comandos do workspace
 
-Execute, a partir da raiz do repositório:
+Identifique o agente atual e execute, a partir da raiz do repositório, usando `codex`, `claude` ou `cursor`:
 
 ```bash
-node .agents/skills/comandos/scripts/list-commands.mjs
+node .agents/skills/comandos/scripts/list-commands.mjs --agent <agente>
 ```
 
 Apresente a saída ao usuário sem executar nenhuma das skills ou dos comandos listados. O catálogo deve refletir somente este workspace: não inclua skills pessoais, globais ou disponibilizadas por plugins.

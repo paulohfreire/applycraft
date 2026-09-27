@@ -3,6 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "agents:setup": "node scripts/agents/setup.mjs",
+    "agents:check": "node scripts/agents/setup.mjs --check",
     "dashboard:data": "node scripts/dashboard/build-data.mjs",
     "dashboard": "node scripts/dashboard/server.mjs",
     "dashboard:check": "node --test tests/dashboard/*.test.mjs",
@@ -10,9 +12,11 @@
     "website": "pnpm --dir website start",
     "website:build": "pnpm --dir website build",
     "website:check": "pnpm --dir website check",
-    "check": "node --test"
+    "check": "node scripts/agents/setup.mjs --check && node --test"
   },
   "commandDescriptions": {
+    "agents:check": "Confirma que os adaptadores do Claude refletem as skills canônicas.",
+    "agents:setup": "Sincroniza as skills canônicas com os adaptadores do Claude Code.",
     "check": "Executa todos os testes automatizados do projeto.",
     "dashboard": "Regenera os dados e abre o dashboard local.",
     "dashboard:check": "Executa os testes automatizados do dashboard.",
