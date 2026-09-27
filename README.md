@@ -6,6 +6,22 @@ O ApplyCraft é um sistema local-first de skills para organizar a avaliação de
 
 O repositório separa responsabilidades para reduzir a perda de contexto e evitar que uma etapa altere indevidamente o trabalho de outra. Os dados profissionais e os materiais das candidaturas permanecem apenas no ambiente local; o Git versiona somente a estrutura, as regras e os fluxos reutilizáveis.
 
+Repositório oficial: [github.com/paulohfreire/applycraft](https://github.com/paulohfreire/applycraft)
+
+## Instalação das skills
+
+Para instalar todas as skills do ApplyCraft em um agente compatível:
+
+```powershell
+npx skills add paulohfreire/applycraft
+```
+
+Para instalar somente uma skill:
+
+```powershell
+npx skills add paulohfreire/applycraft --skill analisar-match-vaga
+```
+
 ## Como o projeto funciona
 
 O trabalho é dividido entre quatro papéis:

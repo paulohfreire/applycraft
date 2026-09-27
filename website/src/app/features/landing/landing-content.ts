@@ -93,7 +93,7 @@ export interface LandingCopy {
   readonly footer: string;
 }
 
-const repoBase = 'https://github.com/paulohfreire/preparacao-entrevistas';
+const repoBase = 'https://github.com/paulohfreire/applycraft';
 const skillBase = `${repoBase}/tree/master/.agents/skills`;
 
 const skillLinks = {
@@ -493,8 +493,8 @@ export const landingContent: Record<Locale, LandingCopy> = {
 };
 
 export const installCommands = {
-  full: 'npx skills add paulohfreire/preparacao-entrevistas',
-  selective: 'npx skills add paulohfreire/preparacao-entrevistas --skill analisar-match-vaga',
+  full: 'npx skills add paulohfreire/applycraft',
+  selective: 'npx skills add paulohfreire/applycraft --skill analisar-match-vaga',
 } as const;
 
 export const repositoryUrl = repoBase;
