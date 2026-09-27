@@ -1,0 +1,39 @@
+<div class="demo-shell">
+  <div class="demo-chrome" aria-hidden="true">
+    <span></span><span></span><span></span>
+    <p>{{ workflow().company }} / {{ workflow().role }}</p>
+  </div>
+  <div class="demo-layout">
+    <div class="step-list" role="group" [attr.aria-label]="workflow().stepLabel">
+      @for (step of workflow().steps; track step.number; let index = $index) {
+        <button
+          type="button"
+          [attr.aria-pressed]="activeIndex() === index"
+          (click)="selectStep(index)"
+        >
+          <span>{{ step.number }}</span
+          >{{ step.label }}
+        </button>
+      }
+    </div>
+    <article class="step-content" aria-live="polite">
+      <span class="step-content__number">{{ activeStep().number }}</span>
+      <h3>{{ activeStep().title }}</h3>
+      <p>{{ activeStep().description }}</p>
+      <div class="terminal-card terminal-card--prompt">
+        <span>{{ workflow().promptLabel }}</span
+        ><code><b aria-hidden="true">›</b> {{ activeStep().prompt }}</code>
+      </div>
+      <div class="result-grid">
+        <div class="terminal-card">
+          <span>{{ workflow().resultLabel }}</span>
+          <p>{{ activeStep().result }}</p>
+        </div>
+        <div class="terminal-card terminal-card--file">
+          <span>{{ workflow().fileLabel }}</span
+          ><code>{{ activeStep().file }}</code>
+        </div>
+      </div>
+    </article>
+  </div>
+</div>

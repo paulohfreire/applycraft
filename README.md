@@ -1,8 +1,8 @@
-# Preparação para entrevistas
+# ApplyCraft — preparação para entrevistas
 
 [English version](README.en.md)
 
-Projeto pessoal para organizar a avaliação de vagas, a adaptação de currículos e cartas de apresentação e a preparação técnica para entrevistas com o Codex.
+O ApplyCraft é um sistema local-first de skills para organizar a avaliação de vagas, a adaptação de currículos e cartas de apresentação, a preparação para entrevistas e o acompanhamento de processos seletivos com o Codex.
 
 O repositório separa responsabilidades para reduzir a perda de contexto e evitar que uma etapa altere indevidamente o trabalho de outra. Os dados profissionais e os materiais das candidaturas permanecem apenas no ambiente local; o Git versiona somente a estrutura, as regras e os fluxos reutilizáveis.
 
@@ -46,12 +46,32 @@ A análise de compatibilidade deve sempre ocorrer antes da adaptação dos docum
 |-- dashboard/                  # front local do acompanhamento visual
 |-- scripts/dashboard/          # geração e validação dos dados do front
 |-- tests/                       # testes do dashboard e das skills
+|-- website/                     # landing page Angular do ApplyCraft
 |-- perfil/                      # dados profissionais locais, ignorados pelo Git
 |-- CONTEXT.md                   # vocabulário e limites do domínio
 |-- .gitignore
 |-- README.en.md
 `-- README.md
 ```
+
+## Landing page
+
+A landing page bilíngue do ApplyCraft está em `website/`. Ela apresenta o fluxo completo, uma demonstração interativa, o catálogo das cinco skills e as opções de instalação. A aplicação usa Angular com prerenderização estática, tema claro ou escuro e não coleta dados de navegação.
+
+Para executar localmente:
+
+```powershell
+pnpm --dir website install
+pnpm --dir website start
+```
+
+Para validar lint, testes e build de produção:
+
+```powershell
+pnpm --dir website check
+```
+
+O arquivo `vercel.json` configura o build e a saída estática para previews e publicação na Vercel. O workflow `Website CI` executa as mesmas verificações no GitHub Actions.
 
 ## Dashboard local
 

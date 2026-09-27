@@ -1,0 +1,51 @@
+name: Website CI
+
+on:
+  pull_request:
+    paths:
+      - 'website/**'
+      - 'vercel.json'
+      - '.github/workflows/website-ci.yml'
+  push:
+    branches: [master]
+    paths:
+      - 'website/**'
+      - 'vercel.json'
+      - '.github/workflows/website-ci.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: website
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: website/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Test
+        run: pnpm test:ci
+
+      - name: Build prerendered site
+        run: pnpm build

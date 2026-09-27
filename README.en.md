@@ -1,8 +1,8 @@
-# Interview preparation
+# ApplyCraft — interview preparation
 
 [Versão em português brasileiro](README.md)
 
-A personal project for organizing job opportunity assessments, tailored résumés and cover letters, and technical interview preparation with Codex.
+ApplyCraft is a local-first skills system for organizing job opportunity assessments, tailored résumés and cover letters, interview preparation, and hiring-process tracking with Codex.
 
 The repository separates responsibilities to reduce context loss and prevent one stage from improperly changing another stage's work. Professional data and application materials remain in the local environment; Git tracks only the structure, rules, and reusable workflows.
 
@@ -46,12 +46,32 @@ The compatibility assessment must always take place before the documents are tai
 |-- dashboard/                  # local visual tracking front end
 |-- scripts/dashboard/          # front-end data generation and validation
 |-- tests/                       # dashboard and skill tests
+|-- website/                     # ApplyCraft Angular landing page
 |-- perfil/                      # local professional data, ignored by Git
 |-- CONTEXT.md                   # domain vocabulary and boundaries
 |-- .gitignore
 |-- README.en.md
 `-- README.md
 ```
+
+## Landing page
+
+The bilingual ApplyCraft landing page lives under `website/`. It presents the complete workflow, an interactive demonstration, the five-skill catalog, and installation options. The application uses Angular with static prerendering, light and dark themes, and no visitor analytics.
+
+To run it locally:
+
+```powershell
+pnpm --dir website install
+pnpm --dir website start
+```
+
+To validate lint, tests, and the production build:
+
+```powershell
+pnpm --dir website check
+```
+
+The `vercel.json` file configures the build and static output for Vercel previews and publishing. The `Website CI` workflow runs the same checks in GitHub Actions.
 
 ## Local dashboard
 
