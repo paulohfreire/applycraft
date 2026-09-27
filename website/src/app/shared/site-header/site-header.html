@@ -1,0 +1,39 @@
+<header class="header">
+  <a class="brand" href="#top" aria-label="ApplyCraft — home"><app-brand-mark /></a>
+  <nav class="nav" [attr.aria-label]="copy().navigationLabel">
+    @for (item of copy().navigation; track item.href) {
+      <a [href]="item.href">{{ item.label }}</a>
+    }
+  </nav>
+  <div class="actions">
+    <div class="language" [attr.aria-label]="copy().languageLabel" role="group">
+      <button
+        type="button"
+        [attr.aria-pressed]="locale() === 'en'"
+        (click)="localeChanged.emit('en')"
+      >
+        EN
+      </button>
+      <span aria-hidden="true">/</span>
+      <button
+        type="button"
+        [attr.aria-pressed]="locale() === 'pt-BR'"
+        (click)="localeChanged.emit('pt-BR')"
+      >
+        PT
+      </button>
+    </div>
+    <button
+      class="theme-toggle"
+      type="button"
+      [attr.aria-label]="theme() === 'dark' ? copy().lightTheme : copy().darkTheme"
+      [attr.title]="theme() === 'dark' ? copy().lightTheme : copy().darkTheme"
+      (click)="themeChanged.emit()"
+    >
+      <span aria-hidden="true">{{ theme() === 'dark' ? '☼' : '●' }}</span>
+    </button>
+    <a class="github-link" [href]="repositoryUrl()" target="_blank" rel="noreferrer"
+      >{{ copy().githubLabel }} <span aria-hidden="true">↗</span></a
+    >
+  </div>
+</header>

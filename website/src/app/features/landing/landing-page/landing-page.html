@@ -1,0 +1,159 @@
+<a class="skip-link" href="#main">{{ copy().skipLink }}</a>
+<app-site-header
+  [copy]="copy()"
+  [locale]="locale()"
+  [theme]="theme()"
+  [repositoryUrl]="repositoryUrl"
+  (localeChanged)="setLocale($event)"
+  (themeChanged)="toggleTheme()"
+/>
+
+<main id="main">
+  <section class="hero section-shell" id="top">
+    <div class="hero__grid" aria-hidden="true"></div>
+    <div class="hero__copy reveal">
+      <p class="eyebrow"><span></span>{{ copy().hero.eyebrow }}</p>
+      <h1>
+        {{ copy().hero.titleLead }} <em>{{ copy().hero.titleAccent }}</em>
+      </h1>
+      <p class="hero__description">{{ copy().hero.description }}</p>
+      <div class="hero__actions">
+        <a class="button button--primary" href="#workflow"
+          >{{ copy().hero.primaryCta }} <span aria-hidden="true">↓</span></a
+        >
+        <a class="button button--ghost" href="#install"
+          >{{ copy().hero.secondaryCta }} <span aria-hidden="true">↗</span></a
+        >
+      </div>
+      <p class="hero__note"><span aria-hidden="true">◆</span>{{ copy().hero.note }}</p>
+    </div>
+
+    <div class="hero__mark reveal" aria-hidden="true">
+      <div class="orbit orbit--one"></div>
+      <div class="orbit orbit--two"></div>
+      <div class="hero__glyph"><span></span></div>
+      <code>$ apply --with-context</code>
+    </div>
+
+    <div class="proof-strip">
+      @for (item of copy().proof; track item.label) {
+        <div>
+          <strong>{{ item.value }}</strong
+          ><span>{{ item.label }}</span>
+        </div>
+      }
+    </div>
+  </section>
+
+  <section class="section-shell section-block" id="workflow">
+    <div class="section-heading">
+      <p class="eyebrow"><span></span>{{ copy().workflow.eyebrow }}</p>
+      <h2>{{ copy().workflow.title }}</h2>
+      <p>{{ copy().workflow.description }}</p>
+    </div>
+    <app-workflow-demo [workflow]="copy().workflow" />
+  </section>
+
+  <section class="section-shell section-block catalog" id="skills">
+    <div class="section-heading section-heading--split">
+      <div>
+        <p class="eyebrow"><span></span>{{ copy().catalog.eyebrow }}</p>
+        <h2>{{ copy().catalog.title }}</h2>
+      </div>
+      <p>{{ copy().catalog.description }}</p>
+    </div>
+    <div class="skill-grid">
+      @for (skill of copy().catalog.skills; track skill.command) {
+        <app-skill-card [skill]="skill" [linkLabel]="copy().catalog.openSource" />
+      }
+    </div>
+  </section>
+
+  <section class="section-shell section-block system">
+    <div class="section-heading section-heading--split">
+      <div>
+        <p class="eyebrow"><span></span>{{ copy().system.eyebrow }}</p>
+        <h2>{{ copy().system.title }}</h2>
+      </div>
+      <p>{{ copy().system.description }}</p>
+    </div>
+    <div class="system-grid">
+      @for (item of copy().system.items; track item.number) {
+        <article>
+          <span>{{ item.number }}</span>
+          <h3>{{ item.title }}</h3>
+          <p>{{ item.description }}</p>
+        </article>
+      }
+    </div>
+  </section>
+
+  <section class="install section-block" id="install">
+    <div class="section-shell install__inner">
+      <div class="section-heading">
+        <p class="eyebrow"><span></span>{{ copy().installation.eyebrow }}</p>
+        <h2>{{ copy().installation.title }}</h2>
+        <p>{{ copy().installation.description }}</p>
+      </div>
+      <div class="install-grid">
+        <article class="command-card command-card--featured">
+          <div>
+            <span>01</span><strong>{{ copy().installation.fullLabel }}</strong>
+            <p>{{ copy().installation.fullDescription }}</p>
+          </div>
+          <code>{{ commands.full }}</code>
+          <button type="button" (click)="copyCommand(commands.full)">
+            {{
+              copiedCommand() === commands.full
+                ? copy().installation.copiedLabel
+                : copy().installation.copyLabel
+            }}
+          </button>
+        </article>
+        <article class="command-card">
+          <div>
+            <span>02</span><strong>{{ copy().installation.selectiveLabel }}</strong>
+            <p>{{ copy().installation.selectiveDescription }}</p>
+          </div>
+          <code>{{ commands.selective }}</code>
+          <button type="button" (click)="copyCommand(commands.selective)">
+            {{
+              copiedCommand() === commands.selective
+                ? copy().installation.copiedLabel
+                : copy().installation.copyLabel
+            }}
+          </button>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-shell section-block privacy">
+    <div class="privacy__mark" aria-hidden="true"><span></span></div>
+    <div>
+      <p class="eyebrow"><span></span>{{ copy().privacy.eyebrow }}</p>
+      <h2>{{ copy().privacy.title }}</h2>
+      <p>{{ copy().privacy.description }}</p>
+      <ul>
+        @for (point of copy().privacy.points; track $index) {
+          <li><span aria-hidden="true">✓</span>{{ point }}</li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section-shell final-cta section-block">
+    <p class="eyebrow"><span></span>{{ copy().cta.eyebrow }}</p>
+    <h2>{{ copy().cta.title }}</h2>
+    <p>{{ copy().cta.description }}</p>
+    <a class="button button--primary" [href]="repositoryUrl" target="_blank" rel="noreferrer"
+      >{{ copy().cta.button }} <span aria-hidden="true">↗</span></a
+    >
+  </section>
+</main>
+
+<footer class="footer section-shell">
+  <app-brand-mark />
+  <p>{{ copy().footer }}</p>
+  <a href="#top" aria-label="Back to top">↑</a>
+</footer>
