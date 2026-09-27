@@ -71,7 +71,7 @@ Para validar lint, testes e build de produção:
 pnpm --dir website check
 ```
 
-O arquivo `vercel.json` configura o build e a saída estática para previews e publicação na Vercel. O workflow `Website CI` executa as mesmas verificações no GitHub Actions.
+O arquivo `website/vercel.json` configura o build e a saída estática para previews e publicação na Vercel. Na configuração do projeto na Vercel, use `website` como **Root Directory**. O workflow `Website CI` executa as mesmas verificações no GitHub Actions.
 
 ## Dashboard local
 

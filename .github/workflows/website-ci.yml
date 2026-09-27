@@ -4,13 +4,11 @@ on:
   pull_request:
     paths:
       - 'website/**'
-      - 'vercel.json'
       - '.github/workflows/website-ci.yml'
   push:
     branches: [master]
     paths:
       - 'website/**'
-      - 'vercel.json'
       - '.github/workflows/website-ci.yml'
 
 permissions:
